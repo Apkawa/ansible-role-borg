@@ -1,9 +1,11 @@
 ---
+# https://github.com/borgbackup/borg/releases
 borg_standalone_download_url: https://github.com/borgbackup/borg/releases/download/1.1.10/borg-linux64
+borg_standalone_checksum: "sha256:6338d67aad4b5cd327b25ea363e30f0ed4abc425ce2d6a597c75a67a876ef9af"
 borg_install_standalone_bin: no
+borg_bin: /usr/bin/borg
 
 borg_package: borgbackup
-borg_bin: /usr/bin/borg
 
 borg_compression: lz4
 # https://borgbackup.readthedocs.io/en/stable/usage/init.html
@@ -38,6 +40,7 @@ borg_backups_example:
     user: "{{ ansible_ssh_user }}"
 
     cron:
+      # https://crontab.guru/
       # By default every hour
       minute: "0"
       hour: "1"
@@ -59,6 +62,7 @@ borg_backups_example:
       prefix: null
       glob: null
       keep:
+        # https://crontab.guru/
         secondly: null
         minutely: null
         hourly: 24

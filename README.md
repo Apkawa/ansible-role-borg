@@ -2,11 +2,11 @@
 
 [![Build Status](https://travis-ci.org/apkawa/ansible-role-borg.svg?branch=master)](https://travis-ci.org/apkawa/ansible-role-borg)
 
-[![Ansible role](https://img.shields.io/ansible/role/%replace%.svg)](https://galaxy.ansible.com/apkawa/%replace%)
-[![Ansible role downloads](https://img.shields.io/ansible/role/d/%replace%.svg)](https://galaxy.ansible.com/apkawa/%replace%)
-[![Ansible role quality](https://img.shields.io/ansible/quality/%replace%.svg)](https://galaxy.ansible.com/apkawa/%replace%)
+[![Ansible role](https://img.shields.io/ansible/role/42608.svg)](https://galaxy.ansible.com/apkawa/borg)
+[![Ansible role downloads](https://img.shields.io/ansible/role/d/42608.svg)](https://galaxy.ansible.com/apkawa/borg)
+[![Ansible role quality](https://img.shields.io/ansible/quality/42608.svg)](https://galaxy.ansible.com/apkawa/borg)
 
-
+Ansible role for [borgbackup](https://borgbackup.readthedocs.io/en/stable/)
 
 Requirements
 ------------
@@ -36,7 +36,6 @@ borg_remotes:
     encryption: "{{ borg_encryption }}"
   # may be string
   db: /path/to/folder
-
 
 borg_backups:
   -
@@ -74,6 +73,7 @@ borg_backups:
 
     prune: true
         cron:
+          # https://crontab.guru/
           # By default every day
           minute: "0"
           hour: "0"
@@ -84,6 +84,7 @@ borg_backups:
         prefix: null
         glob: null
         keep:
+            # https://crontab.guru/
             secondly: null
             minutely: null
             hourly: 24

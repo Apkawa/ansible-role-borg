@@ -1,5 +1,41 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    # Default user
+    ansible_ssh_user: root
+    borg_remotes:
+      default: /tmp/borg_remote/default/
+      db:
+        path: /tmp/borg_remote/db/
+    borg_backups:
+      -
+        # require
+        name: minimal
+        from:
+          - /path/to/from_folder #
+        dest: "{hostname}_minimal"
+      -
+        # require
+        name: with_stdin_and_cleanup
+        from:
+          - "-" # for stdin
+        dest: "{hostname}_db_{now:%Y-%m-%dT%H:%M:%S}"
+        #optional
+        stdin_name: dump.sql
+        # By default - true
+        before_command: >- # Must be no line!
+          echo "Backup to stdout"
+
+        workdir: /etc/
+        remote: db
+        cron:
+          minute: "30"
+          hour: "2"
+
+        prune: true
+        delete: false
+
+
   roles:
     - role: ansible-role-borg

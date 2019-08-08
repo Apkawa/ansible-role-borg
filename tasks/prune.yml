@@ -1,0 +1,55 @@
+---
+
+- name: cron_prune vars
+  set_fact:
+    borg_prune_cron: >-
+      {% set borg_cron=[] -%}
+      {%- for backup in borg_backups -%}
+        {%- set prune_opts=backup.get('prune', {}) -%}
+        {%- if prune_opts is sameas true %}
+          {%- set prune_opts={'enabled': True} -%}
+        {%- endif -%}
+        {%- set prune_keep_opts={'hourly': 24, 'daily': 14, 'weekly': 8, 'monthly': -1}|combine(prune_opts.get('keep', {})) %}
+        {%- set args=[] -%}
+        {%- for k, v in prune_keep_opts.items() -%}
+          {%- if v -%}
+            {% set _=args.append('--keep-{}={}'.format(k,v)) -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if prune_opts.get('glob') -%}
+            {% set _=args.append('--glob-archives=' + prune_opts.glob) -%}
+        {%- endif %}
+        {%- if prune_opts.get('prefix') -%}
+            {% set _=args.append('--prefix=' + prune_opts.prefix) -%}
+        {%- endif -%}
+        {%- set remote=borg_remotes[backup.get('remote', 'default')] -%}
+        {%- set command=("{borg_bin} prune {args} {remote}").format(
+            borg_bin=borg_bin,
+            remote=remote.path,
+            args=' '.join(args)
+            ) -%}
+        {% set prune_cron=prune_opts.cron|default({'hour': '2', 'minute': '0'}) -%}
+        {% set cron_entry=prune_cron|combine(
+              {
+              'name': 'borg__prune__' + backup.name,
+              'command': command,
+              'delete': not prune_opts.get('enabled')
+              }
+        ) -%}
+        {% set _ignored=borg_cron.append(cron_entry) -%}
+      {%- endfor -%}
+      {{ borg_cron }}
+
+  when: borg_backups is defined and borg_backups
+
+
+#- debug: var=borg_prune_cron
+#- debug:
+#    msg: "{{ item }}"
+#  with_items: "{{ borg_prune_cron }}"
+
+- name: Install backup cleanup cron
+  include_role:
+    name: apkawa.cron
+  vars:
+    cron: "{{ borg_prune_cron }}"

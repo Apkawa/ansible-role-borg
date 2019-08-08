@@ -1,2 +1,71 @@
 ---
-# defaults file for ansible-role-borg
+borg_package: borgbackup
+borg_bin: /usr/bin/borg
+
+borg_compression: lz4
+# https://borgbackup.readthedocs.io/en/stable/usage/init.html
+borg_encryption: none
+
+# https://borgbackup.readthedocs.io/en/stable/usage/general.html
+borg_remotes:
+  default:
+    path: 'ssh://example.org'
+    compression: "{{ borg_compression }}"
+    # Todo handle it
+    encryption: "{{ borg_encryption }}"
+  # may be string
+  db: /path/to/folder
+
+
+borg_backups_example:
+  -
+    # require
+    name: example
+    from:
+      - "-" # for stdin
+      - /path/to/from_folder #
+    dest: "{hostname}_db_{now:%Y-%m-%dT%H:%M:%S}"
+    #optional
+    stdin_name: dump.sql
+    # By default - true
+    before_command: >- # Must be no line!
+      /usr/local/bin/command_to_stout_backup
+
+    # defaults
+    workdir: none
+    remote: default
+    user: "{{ ansible_ssh_user }}"
+
+    cron:
+      # By default every hour
+      minute: "0"
+      hour: "1"
+
+      day: "*"
+      month: "*"
+      weekday: "*"
+
+    prune:
+      enabled: yes
+      cron:
+        # By default every day
+        minute: "0"
+        hour: "2"
+        day: "*"
+        month: "*"
+        weekday: "*"
+      # https://borgbackup.readthedocs.io/en/stable/usage/prune.html
+      prefix: null
+      glob: null
+      keep:
+        secondly: null
+        minutely: null
+        hourly: 24
+        daily: 14
+        weekly: 8
+        monthly: -1
+    #
+    delete: false
+
+
+

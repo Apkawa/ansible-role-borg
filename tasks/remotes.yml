@@ -1,0 +1,27 @@
+---
+
+- name: Remap borg_remotes fact
+  set_fact:
+    borg_remotes: >-
+      {%- set _remotes={} -%}
+      {%- for key, value in borg_remotes.items() -%}
+        {%- set _opts=value -%}
+        {%- if _opts is not mapping -%}
+        {%- set _opts={'path':_opts} -%}
+        {%- endif -%}
+        {%- set value={'encryption': borg_encryption, 'compresison': borg_compression}|combine(_opts) -%}
+        {%- set _=_remotes.update({key:value}) -%}
+      {%- endfor -%}
+      {{ _remotes }}
+
+- debug: var=borg_remotes
+
+- name: Initialize remote
+  shell: >
+    {{ borg_bin }} info {{ item.value.path }} ||
+    {{ borg_bin }} init
+    --encryption={{ item.value.encryption }}
+    --make-parent-dirs {{ item.value.path }}
+  with_dict: "{{ borg_remotes }}"
+  register: borg_init_remote
+  changed_when: "'does not exist.' in borg_init_remote.stdout"

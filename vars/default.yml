@@ -1,1 +1,4 @@
 ---
+
+borg_package: borgbackup
+borg_bin: /usr/bin/borg

@@ -2,7 +2,7 @@
 galaxy_info:
   role_name: borg
   author: apkawa
-  description: Ansible role for borgbackup
+  description: Ansible role for borgbackup. add cron shedule for backup and cleanup
   license: MIT
 
   min_ansible_version: 2.4
@@ -27,7 +27,8 @@ galaxy_info:
         - bionic
 
   galaxy_tags:
-    - cron
+    - borg
+    - backup
     - system
     - server
 

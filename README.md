@@ -1,12 +1,12 @@
-Role Name
-=========
+# Ansible role: borg
+
 [![Build Status](https://travis-ci.org/apkawa/ansible-role-borg.svg?branch=master)](https://travis-ci.org/apkawa/ansible-role-borg)
 
 [![Ansible role](https://img.shields.io/ansible/role/%replace%.svg)](https://galaxy.ansible.com/apkawa/%replace%)
 [![Ansible role downloads](https://img.shields.io/ansible/role/d/%replace%.svg)](https://galaxy.ansible.com/apkawa/%replace%)
 [![Ansible role quality](https://img.shields.io/ansible/quality/%replace%.svg)](https://galaxy.ansible.com/apkawa/%replace%)
 
-A brief description of the role goes here.
+
 
 Requirements
 ------------
@@ -38,7 +38,7 @@ borg_remotes:
   db: /path/to/folder
 
 
-borg_backups_example:
+borg_backups:
   -
     # require
     name: minimal
@@ -73,22 +73,23 @@ borg_backups_example:
       weekday: "*"
 
     prune: true
-    prune_cron:
-      # By default every day
-      minute: "0"
-      hour: "0"
-      day: "*"
-      month: "*"
-      weekday: "*"
-    # https://borgbackup.readthedocs.io/en/stable/usage/prune.html
-    prune_prefix: null
-    prune_glob: null
-    keep_secondly: null
-    keep_minutely: null
-    keep_hourly: 24
-    keep_daily: 14
-    keep_weekly: 8
-    keep_monthly: -1
+        cron:
+          # By default every day
+          minute: "0"
+          hour: "0"
+          day: "*"
+          month: "*"
+          weekday: "*"
+        # https://borgbackup.readthedocs.io/en/stable/usage/prune.html
+        prefix: null
+        glob: null
+        keep:
+            secondly: null
+            minutely: null
+            hourly: 24
+            daily: 14
+            weekly: 8
+            monthly: -1
     #
     delete: false
 ```
@@ -97,7 +98,7 @@ borg_backups_example:
 Dependencies
 ------------
 
-None
+- [apkawa.cron](https://galaxy.ansible.com/apkawa/cron)
 
 Example Playbook
 ----------------
@@ -105,7 +106,7 @@ Example Playbook
 ```yaml
 - hosts: all
   roles:
-    - role: ansible-role-
+    - role: ansible-role-borg
 
 ```
 

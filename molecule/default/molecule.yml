@@ -7,7 +7,7 @@ driver:
   name: docker
 lint:
   name: yamllint
-  enabled: no
+  enabled: yes
 platforms:
   - name: borg-test-role-instance
     image: geerlingguy/docker-${MOLECULE_DISTRO:-centos7}-ansible:latest

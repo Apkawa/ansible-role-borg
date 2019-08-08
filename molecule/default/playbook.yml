@@ -9,19 +9,15 @@
       db:
         path: /tmp/borg_remote/db/
     borg_backups:
-      -
-        # require
-        name: minimal
+      - name: minimal
         from:
-          - /path/to/from_folder #
+          - /path/to/from_folder
         dest: "{hostname}_minimal"
-      -
-        # require
-        name: with_stdin_and_cleanup
+      - name: with_stdin_and_cleanup
         from:
-          - "-" # for stdin
+          - "-"
         dest: "{hostname}_db_{now:%Y-%m-%dT%H:%M:%S}"
-        #optional
+        # optional
         stdin_name: dump.sql
         # By default - true
         before_command: >- # Must be no line!

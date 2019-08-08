@@ -42,12 +42,6 @@
 
   when: borg_backups is defined and borg_backups
 
-
-#- debug: var=borg_prune_cron
-#- debug:
-#    msg: "{{ item }}"
-#  with_items: "{{ borg_prune_cron }}"
-
 - name: Install backup cleanup cron
   include_role:
     name: apkawa.cron

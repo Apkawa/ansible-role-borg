@@ -14,3 +14,19 @@
         - "default.yml"
       paths:
         - 'vars'
+
+- debug: var=borg_install_standalone_bin
+- debug: var=ansible_distribution
+
+- name: Force standalone install
+  set_fact:
+    borg_install_standalone_bin: true
+  when: (
+    not borg_install_standalone_bin
+    and (
+      ansible_distribution == "Ubuntu"
+      or (ansible_distribution == "Fedora" and ansible_distribution_major_version|int < 30)
+      or (ansible_distribution == "CentOS" and ansible_distribution_major_version == "6")
+      or (ansible_distribution == "Debian" and ansible_distribution_major_version|int < 10)
+    )
+    )

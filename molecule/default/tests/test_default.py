@@ -28,5 +28,11 @@ def test_cron_generated(host):
     ).strip()
 
 
-def test_borg_remotes(host):
-    cmd = host.run('borg info')
+def test_borg_version(host):
+    cmd = host.run('borg --version')
+    assert cmd.rc == 0
+
+def test_borg_remote(host):
+    cmd = host.run('borg info /tmp/borg_remote/default/')
+    assert cmd.rc == 0
+

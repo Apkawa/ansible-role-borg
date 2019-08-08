@@ -106,7 +106,7 @@ Example Playbook
 ```yaml
 - hosts: all
   roles:
-    - role: ansible-role-borg
+    - role: apkawa.borg
 
 ```
 

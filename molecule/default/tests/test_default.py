@@ -21,7 +21,7 @@ def test_cron_generated(host):
         r"'/tmp/borg_remote/db/::{hostname}_db_{now:\%Y-\%m-\%dT\%H:\%M:\%S}' - "
         r"--stdin-name=dump.sql; } 2>&1 >>/var/log/borg__with_stdin_and_cleanup.log" '\n'
         r'#Ansible: borg__prune__with_stdin_and_cleanup' '\n'
-        
+
         r'0 2 * * * /usr/bin/borg prune '
         r'--keep-hourly=24 --keep-daily=14 --keep-weekly=8 --keep-monthly=-1 '
         r'/tmp/borg_remote/db/' '\n'
@@ -32,7 +32,7 @@ def test_borg_version(host):
     cmd = host.run('borg --version')
     assert cmd.rc == 0
 
+
 def test_borg_remote(host):
     cmd = host.run('borg info /tmp/borg_remote/default/')
     assert cmd.rc == 0
-

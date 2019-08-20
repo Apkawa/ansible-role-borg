@@ -10,21 +10,18 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 def test_cron_generated(host):
     cmd = host.run('crontab -l')
     assert cmd.rc == 0
+    print(cmd.stdout)
     assert cmd.stdout.strip() == (
-        r'#Ansible: borg__minimal' '\n'
-        r"0 1 * * * cd $HOME && {  /usr/bin/borg create --compression=lz4 "
-        r"'/tmp/borg_remote/default/::{hostname}_minimal' /path/to/from_folder "
-        r"--stdin-name=stdout; } 2>&1 >>/var/log/borg__minimal.log" '\n'
-        r'#Ansible: borg__with_stdin_and_cleanup' '\n'
-        r'30 2 * * * cd /etc/ && { out=$(echo "Backup to stdout") '
-        r'&& echo $out |  /usr/bin/borg create --compression=lz4 '
-        r"'/tmp/borg_remote/db/::{hostname}_db_{now:\%Y-\%m-\%dT\%H:\%M:\%S}' - "
-        r"--stdin-name=dump.sql; } 2>&1 >>/var/log/borg__with_stdin_and_cleanup.log" '\n'
-        r'#Ansible: borg__prune__with_stdin_and_cleanup' '\n'
-
-        r'0 2 * * * /usr/bin/borg prune '
-        r'--keep-hourly=24 --keep-daily=14 --keep-weekly=8 --keep-monthly=-1 '
-        r'/tmp/borg_remote/db/' '\n'
+        """
+#Ansible: borg__minimal
+0 1 * * * set -ex && cd $HOME && {  /usr/bin/borg create --compression=lz4 '/tmp/borg_remote/default/::{hostname}_minimal' /path/to/from_folder --stdin-name=stdout; } 2>&1 >>/var/log/borg__minimal.log
+#Ansible: borg__with_stdin_and_cleanup
+30 2 * * * set -ex && cd /etc/ && { echo "Backup to stdout" |  /usr/bin/borg create --compression=lz4 '/tmp/borg_remote/db/::{hostname}_db_{now:\%Y-\%m-\%dT\%H:\%M:\%S}' - --stdin-name=dump.sql; } 2>&1 >>/var/log/borg__with_stdin_and_cleanup.log
+#Ansible: borg__prune__minimal
+0 2 * * * /usr/bin/borg prune --keep-hourly=24 --keep-daily=14 --keep-weekly=8 --keep-monthly=-1 /tmp/borg_remote/default/
+#Ansible: borg__prune__with_stdin_and_cleanup
+0 2 * * * /usr/bin/borg prune --keep-hourly=24 --keep-daily=14 --keep-weekly=8 --keep-monthly=-1 /tmp/borg_remote/db/
+        """
     ).strip()
 
 

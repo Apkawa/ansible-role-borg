@@ -33,7 +33,8 @@
               {
               'name': 'borg__prune__' + backup.name,
               'command': command,
-              'delete': not prune_opts.get('enabled')
+              'user': backup.get('user', ansible_ssh_user),
+              'delete': not prune_opts.get('enabled', True)
               }
         ) -%}
         {% set _ignored=borg_cron.append(cron_entry) -%}

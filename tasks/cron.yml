@@ -11,9 +11,9 @@
         {% set remote=borg_remotes[backup.get('remote', 'default')] -%}
         {% set before_command="" -%}
         {%- if backup.get('before_command') -%}
-        {% set before_command="out=$({command}) && echo $out | ".format(command=backup['before_command']) -%}
+        {% set before_command="{command} | ".format(command=backup['before_command']) -%}
         {%- endif -%}
-        {% set command=("cd {workdir} && {{ {before_command} {borg_bin} create --compression={compression} '{remote}::{dest}' {from} "
+        {% set command=("set -ex && cd {workdir} && {{ {before_command} {borg_bin} create --compression={compression} '{remote}::{dest}' {from} "
             + "--stdin-name={stdin_name}; }} 2>&1 >>/var/log/{name}.log").format(
             before_command=before_command,
             borg_bin=borg_bin,
@@ -26,8 +26,9 @@
             name="borg__" + backup.name,
             ) -%}
         {% set _cron=backup.cron|default({'hour': '1', 'minute': '0'}) -%}
-        {% set cron_entry=backup|combine(_cron)|combine(
+        {% set cron_entry=_cron|combine(
               {
+              'user': backup.get('user', ansible_ssh_user),
               'command': command,
               'name': "borg__" + backup.name,
               }

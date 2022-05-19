@@ -59,7 +59,7 @@ jobs:
           pipenv install --dev
       - name: Test with molecule
         run: |
-          molecule test
+          tox
 
 # TODO
 #  publish:

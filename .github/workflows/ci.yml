@@ -1,0 +1,70 @@
+---
+name: Molecule Test
+
+on: [push]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ 3.7, 3.8, 3.9, "3.10"]
+        toxenv:
+          - centos6
+          - centos7
+          - ubuntu2004
+          - ubuntu1804
+          - debian10
+          - debian9
+          - fedora27
+          - fedora30
+          # check ansible version on centos7
+          - ansible28-centos7
+          # check ansible version on debian10
+          - ansible28-debian10
+        experimental: [ false ]
+        include:
+          - toxenv: ubuntu1404
+            python-version: 3.7
+            experimental: true
+          - toxenv: ansible24-centos7
+            python-version: 3.7
+            experimental: true
+          - toxenv: ansible24-debian10
+            python-version: 3.7
+            experimental: true
+
+    runs-on: ubuntu-latest
+    name: "python ${{ matrix.python-version }} ${{ matrix.toxenv }}"
+
+    continue-on-error: ${{ matrix.experimental }}
+
+    env:
+      PIPENV_VENV_IN_PROJECT: 1
+      PIPENV_IGNORE_VIRTUALENVS: 1
+      TOXENV: ${{ matrix.toxenv }}
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          path: molecule_test
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          sudo apt install docker
+          python -m pip install --upgrade pip
+          pip install pipenv
+          pipenv install --dev
+      - name: Test with molecule
+        run: |
+          molecule test
+
+# TODO
+#  publish:
+#    name: Publish to galaxy
+#    needs:
+#      - test
+#    runs-on: ubuntu-latest
+#

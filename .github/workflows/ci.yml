@@ -40,8 +40,6 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
 
     env:
-#      PIPENV_VENV_IN_PROJECT: 1
-#      PIPENV_IGNORE_VIRTUALENVS: 1
       TOXENV: ${{ matrix.toxenv }}
     steps:
       - uses: actions/checkout@v1
@@ -55,11 +53,9 @@ jobs:
         run: |
           sudo apt install docker
           python -m pip install --upgrade pip
-          pip install pipenv
-          pipenv install --deploy --dev
+          pip install tox
       - name: Test with molecule
-        run: |
-          tox
+        run: tox
 
 # TODO
 #  publish:

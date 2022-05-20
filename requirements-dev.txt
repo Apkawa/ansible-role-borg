@@ -1,0 +1,4 @@
+tox==3.7.0
+ansible<2.10
+molecule[docker] < 3
+rich>=9.5.1,<11.0.0

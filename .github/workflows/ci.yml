@@ -45,8 +45,6 @@ jobs:
       - name: Setup docker
         uses: docker-practice/actions-setup-docker@master
       - uses: actions/checkout@v1
-        with:
-          path: ansible-role-borg
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
